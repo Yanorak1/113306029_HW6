@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>1A2B Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+            color: #555;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            font-size: 14px;
+            width: calc(100% - 12px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #result {
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        .history-row {
+            font-size: 14px;
+        }
+
+        .win-message {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>113306029_HW6_1A2B</h1>
+    <table border="1" id="gameTable">
+        <tr>
+            <td colspan="3">1A2B game</td>
+        </tr>
+        <tr>
+            <td>
+                <label>Input:
+                    <input type="text" id="userInput" size="25" maxlength="4">
+                </label><br>
+            </td>
+            <td>
+                <button onclick="checkAnswer()">Submit the answer</button>
+            </td>
+            <td>
+                <div id="result">Result: </div>
+            </td>
+        </tr>
+    </table>
+    <script>
+        // 隨機生成 4 個不重複的數字
+        const correctAnswer = [];
+        while (correctAnswer.length < 4) {
+            const randomNumber = Math.floor(Math.random() * 9) + 1; // 生成 1-9 的隨機數
+            if (!correctAnswer.includes(randomNumber)) {
+                correctAnswer.push(randomNumber);
+            }
+        }
+        console.log("Correct Answer (Debug):", correctAnswer.join("")); // 供開發者檢查
+
+        function checkAnswer() {
+            const userInput = document.getElementById('userInput').value; // 獲取使用者輸入
+            if (userInput.length !== 4 || isNaN(userInput)) {
+                alert("Please enter exactly 4 digits.");
+                return;
+            }
+
+            const userArray = userInput.split("").map(Number); // 將字串轉為數字陣列
+            let aCount = 0; // A 的計數
+            let bCount = 0; // B 的計數
+
+            // 計算 A 和 B
+            userArray.forEach((num, index) => {
+                if (num === correctAnswer[index]) {
+                    aCount++; // 數字與位置都正確
+                } else if (correctAnswer.includes(num)) {
+                    bCount++; // 數字正確但位置不對
+                }
+            });
+
+            // 顯示結果
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = `Result: ${aCount}A${bCount}B`;
+
+            // 動態添加歷史記錄到表格中
+            const gameTable = document.getElementById('gameTable');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${userInput}</td>
+                <td>${aCount}A${bCount}B</td>
+                <td>${aCount === 4 ? "You win!" : ""}</td>
+            `;
+            gameTable.appendChild(newRow);
+
+            // 判斷遊戲是否結束
+            if (aCount === 4) {
+                alert("Congratulations! You guessed it right.");
+            }
+        }
+    </script>
+</body>
+</html>
